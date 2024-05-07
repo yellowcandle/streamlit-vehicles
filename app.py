@@ -35,6 +35,8 @@ data_by_month = fetch_data()
 
 df = data_by_month[('mar', 2024)]
 df
+df = data_by_month[('mar', 2024)]
+df
 
 # Extract month_latest and year_latest from the sorted data
 sorted_data = sorted(data_by_month.items(), key=lambda x: (x[0][1], datetime.datetime.strptime(x[0][0], '%b').month), reverse=True)
@@ -64,6 +66,19 @@ def display_tesla_data(data_by_month, month_latest, year_latest):
 
 tesla_count, tesla_prev_count = display_tesla_data(data_by_month, month_latest, year_latest)
 st.metric(label=f"New Tesla {month_latest.capitalize()} {year_latest}", value=tesla_count, delta=tesla_count - tesla_prev_count)
+
+def display_tesla_models(df_latest):
+    df_tesla = df_latest[df_latest['Vehicle Make'] == 'TESLA'].copy()
+    tesla_models = ['MODEL S', 'MODEL 3', 'MODEL X', 'MODEL Y']
+    df_tesla['Grouped Model'] = df_tesla['Vehicle Model'].apply(lambda x: next((m for m in tesla_models if m in x), 'Other'))
+    df_tesla_models = df_tesla.groupby('Grouped Model').size().reset_index(name='Count')
+    return df_tesla_models
+
+df_tesla_models = display_tesla_models(df_latest)
+st.write(df_tesla_models)
+st.metric(label=f"New Tesla Model 3 {month_latest.capitalize()} {year_latest}", value=df_tesla_models[df_tesla_models['Grouped Model'] == 'MODEL 3'].iloc[0]['Count'])
+st.metric(label=f"New Tesla Model Y {month_latest.capitalize()} {year_latest}", value=df_tesla_models[df_tesla_models['Grouped Model'] == 'MODEL Y'].iloc[0]['Count'])
+
 
 def display_tesla_models(df_latest):
     df_tesla = df_latest[df_latest['Vehicle Make'] == 'TESLA'].copy()
