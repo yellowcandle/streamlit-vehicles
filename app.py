@@ -33,10 +33,7 @@ def fetch_data():
 
 data_by_month = fetch_data()
 
-df = data_by_month[('mar', 2024)]
-df
-df = data_by_month[('mar', 2024)]
-df
+
 
 # Extract month_latest and year_latest from the sorted data
 sorted_data = sorted(data_by_month.items(), key=lambda x: (x[0][1], datetime.datetime.strptime(x[0][0], '%b').month), reverse=True)
@@ -125,3 +122,8 @@ def display_byd_models(df_latest):
     return df_byd_models
 
 df_byd_models = display_byd_models(df_latest)
+
+st.header("Full Table")
+df = data_by_month[('mar', 2024)]
+df
+
